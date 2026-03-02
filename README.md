@@ -22,27 +22,51 @@ uv pip install -r requirements.txt
 
 ```json
 {
-  "total_accounts": 5,
-  "freemail_worker_domain": "",
-  "freemail_token": "",
+  "_comment": "ChatGPT(freemail)",
+
+  "total_accounts": 12,
+  "concurrent_workers": 4,
+
+  "freemail_worker_domain": "your.freemail.domain",
+  "freemail_token": "your_freemail_JWT_token",
+
   "proxy": "http://127.0.0.1:7890",
-  "output_file": "registered_accounts.txt",
+
+  "output_file": "accounts.txt",
+  "log_level": "info",
+
   "enable_oauth": true,
+  "oauth_issuer": "https://auth.openai.com",
+  "oauth_client_id": "app_EMoamEEZ73f0CkXaXp7hrann",
   "oauth_redirect_uri": "http://localhost:1455/auth/callback",
   "ak_file": "ak.txt",
-  "rk_file": "rk.txt"
+  "rk_file": "rk.txt",
+  "token_json_dir": "codex_tokens",
+  "upload_api_url": "http://localhost:8317/v0/management/auth-files",
+  "upload_api_token": "your_cpa_dashboard_password"
 }
 ```
 
 | 配置项 | 说明 |
 |--------|------|
-| total_accounts | 注册账号数量 |
-| freemail_worker_domain / freemail_token | freemail 工作器域名与 Token |
-| proxy | 代理地址 (可选) |
-| output_file | 输出账号文件 |
-| enable_oauth | 启用 OAuth 登录 |
-| ak_file | Access Key 文件 |
-| rk_file | Refresh Key 文件 |
+| total_accounts | 要批量注册的账号数（脚本会尝试创建这么多账号） |
+| concurrent_workers | 并发工作线程数（用于同时注册多个账号） |
+| freemail_worker_domain | freemail 工作器域名（用于创建临时邮箱） |
+| freemail_token | freemail 的认证 token（JWT 或服务器提供的密钥） |
+| proxy | 全局 HTTP(s) 代理（可选），格式如 http://127.0.0.1:7890 |
+| output_file | 注册结果保存文件名（相对于 output/[timestamp]-[n]/） |
+| log_level | 日志级别，支持 debug/info/warn/error |
+| enable_oauth | 是否启用 OAuth 登录流程（true/false） |
+| oauth_issuer | OAuth 授权服务器基地址（通常 https://auth.openai.com） |
+| oauth_client_id | OAuth 客户端 ID（用于 Codex/oauth 流程） |
+| oauth_redirect_uri | OAuth 回调地址（需与客户端配置一致） |
+| ak_file | Access Key 保存文件名（可留空） |
+| rk_file | Refresh Key 保存文件名（可留空） |
+| token_json_dir | 保存 token JSON 的目录（相对于 output/） |
+| upload_api_url | 可选：向 CPA 面板上传账号的 API 地址（留空则不上传） |
+| upload_api_token | 可选：上传接口的授权 token（留空则不上传） |
+
+说明：脚本对多数配置项提供默认值（见 `config.json`），你只需填写与运行环境相关的项，例如 `freemail_worker_domain`、`freemail_token`、以及代理/上传相关设置。
 
 ## CPA 面板集成 (TODO)
 
