@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import string
 import uuid
 import base64
 import secrets
@@ -228,9 +229,10 @@ try:
         """兼容包装：调用 codex.protocol_keygen.fetch_sentinel_challenge"""
         return _protocol_keygen.fetch_sentinel_challenge(session, device_id, flow=flow)
 
-    def build_sentinel_token(session, device_id, flow="authorize_continue"):
-        """兼容包装：调用 codex.protocol_keygen.build_sentinel_token"""
-        return _protocol_keygen.build_sentinel_token(session, device_id, flow=flow)
+    def build_sentinel_token(session, device_id, flow, **kwargs):
+        """向后兼容的 shim：委托给 codex.protocol_keygen.build_sentinel_token"""
+        from codex.protocol_keygen import build_sentinel_token as _build_sentinel_token_impl
+        return _build_sentinel_token_impl(session, device_id, flow, **kwargs)
 except Exception:
     # If import fails, provide stubs that raise clear error when used
     def fetch_sentinel_challenge(session, device_id, flow="authorize_continue"):

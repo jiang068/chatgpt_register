@@ -1012,28 +1012,14 @@ def fetch_sentinel_challenge(session, device_id, flow="authorize_continue"):
         return None
 
 
-def build_sentinel_token(session, device_id, flow="authorize_continue"):
-    """
-    构建完整的 openai-sentinel-token JSON 字符串（纯 Python，零浏览器）
-
-    核心结论（已验证）：
-      - t 字段传空字符串即可（服务端不校验）
-      - c 字段从 POST /backend-api/sentinel/req 实时获取
-      - p 字段用服务端返回的 seed/difficulty 重新计算 PoW
-
-    参数:
-        session: requests.Session 实例
-        device_id: 设备 ID
-        flow: 业务流类型
-    返回:
-        str: JSON 字符串格式的 sentinel token；失败返回 None
-    """
-    challenge = fetch_sentinel_challenge(session, device_id, flow)
-    if not challenge:
+def build_sentinel_token(session, device_id, flow, **kwargs):
+    """获取并构建 Sentinel token (PoW)"""
+    challenge_data = fetch_sentinel_challenge(session, device_id, flow)
+    if not challenge_data:
         return None
 
-    c_value = challenge.get("token", "")
-    pow_data = challenge.get("proofofwork", {})
+    c_value = challenge_data.get("token", "")
+    pow_data = challenge_data.get("proofofwork", {})
     gen = SentinelTokenGenerator(device_id=device_id)
 
     if pow_data.get("required") and pow_data.get("seed"):

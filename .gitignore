@@ -40,3 +40,7 @@ data/
 .env
 config.json
 codex/config.json
+ak.txt
+rk.txt
+codex_tokens/
+registered_accounts.txt
